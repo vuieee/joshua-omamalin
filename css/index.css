@@ -1,4 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@font-face{
+  font-family:"JetBrains Mono";
+  font-style:normal;
+  font-weight:400 700;
+  font-display:swap;
+  src:url("../fonts/woff2/JetBrainsMono-Latin.woff2") format("woff2");
+}
 
 /* Homepage theme: warm off-white, charcoal, and terracotta. */
 :root{
@@ -35,12 +41,11 @@
 /* Layout for every page. Uses the colour variables from common.css */
 html{scrollbar-gutter:auto;scrollbar-width:none}
 html::-webkit-scrollbar{display:none}
-.overlay-scrollbar{position:fixed;top:0;right:0;bottom:0;z-index:1000;width:14px;touch-action:none;opacity:.5;transition:opacity .15s ease}
+.overlay-scrollbar{position:fixed;top:0;right:0;bottom:0;z-index:1000;width:14px;touch-action:none;opacity:.5;outline:none;box-shadow:none;transition:opacity .15s ease}
 .overlay-scrollbar[hidden]{display:none}
-.overlay-scrollbar:hover,.overlay-scrollbar:focus-visible,.overlay-scrollbar.is-dragging{opacity:1}
-.overlay-scrollbar:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.overlay-scrollbar:hover,.overlay-scrollbar:focus-visible,.overlay-scrollbar.is-dragging{opacity:.7;outline:none;box-shadow:none}
 .overlay-scrollbar-thumb{position:absolute;top:0;right:4px;width:4px;min-height:28px;background:var(--fg3);transition:width .15s ease,right .15s ease}
-.overlay-scrollbar:hover .overlay-scrollbar-thumb,.overlay-scrollbar:focus-visible .overlay-scrollbar-thumb,.overlay-scrollbar.is-dragging .overlay-scrollbar-thumb{right:2px;width:8px;background:var(--fg)}
+.overlay-scrollbar:hover .overlay-scrollbar-thumb,.overlay-scrollbar:focus-visible .overlay-scrollbar-thumb,.overlay-scrollbar.is-dragging .overlay-scrollbar-thumb{right:4px;width:4px;background:var(--fg3)}
 @media(prefers-reduced-motion:reduce){
   .overlay-scrollbar,.overlay-scrollbar-thumb{transition:none}
 }
@@ -118,6 +123,7 @@ article.language-c .code-comment{color:var(--fg4);font-style:italic}
 .listing h1{font-family:"JetBrains Mono",monospace;font-size:2.1rem;font-weight:500;line-height:1.3;margin-bottom:.4rem;overflow-wrap:anywhere}
 .nf{font-family:"JetBrains Mono",monospace;font-weight:500;margin-bottom:.8rem}
 .about{margin-top:.6rem}
+.home img{float:right;vertical-align:top;margin-left:2rem}
 .about img{outline:1px solid var(--fg);margin-top:2.8rem}
 .about p:first-of-type{text-align:justify;hyphens:auto}
 .about:after{content:"";display:block;clear:both}
