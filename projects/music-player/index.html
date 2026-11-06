@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Player | Joshua Omamalin</title>
+<meta name="description" content="A small browser music player for listening while you browse.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../../css/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="index music-player-page">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../../cv/">CV</a><a class="slide" href="../../publications/">Publications</a><a class="slide" href="../../articles/">Articles</a><a class="slide" href="../" aria-current="page">Side Projects</a></nav>
+    </header>
+
+    <section class="music-player" aria-labelledby="musicPlayerTitle">
+      <div class="music-player-heading">
+        <div>
+          <p class="eyebrow">BROWSER MUSIC PLAYER</p>
+          <h1 id="musicPlayerTitle">Music Player</h1>
+        </div>
+        <span class="player-status" id="playerStatus" role="status">READY</span>
+      </div>
+
+      <div class="now-playing">
+        <div class="track-copy">
+          <p class="eyebrow">NOW PLAYING</p>
+          <h2 id="trackTitle">Select a track</h2>
+          <p id="trackArtist">Your music, while you browse.</p>
+        </div>
+        <span id="trackPosition" class="track-position">00 / 00</span>
+      </div>
+
+      <div class="visualizer-wrap" aria-label="Audio visualizer">
+        <div id="visualizer" class="visualizer" aria-hidden="true"></div>
+        <div class="visualizer-base" aria-hidden="true"></div>
+      </div>
+
+      <div class="timeline">
+        <span id="currentTime" class="time-label">0:00</span>
+        <input id="timeline" class="range-control timeline-control" type="range" min="0" max="0" step="0.1" value="0" aria-label="Seek through track" disabled>
+        <span id="duration" class="time-label">0:00</span>
+      </div>
+
+      <div class="player-controls">
+        <div class="transport-controls" aria-label="Playback controls">
+          <button id="previousButton" class="icon-button" type="button" aria-label="Previous track" disabled>PREV</button>
+          <button id="playButton" class="play-button" type="button" aria-label="Play" disabled><span id="playIcon" aria-hidden="true">PLAY</span></button>
+          <button id="nextButton" class="icon-button" type="button" aria-label="Next track" disabled>NEXT</button>
+        </div>
+        <label class="volume-control" for="volume">
+          <span>VOL</span>
+          <input id="volume" class="range-control volume-range" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+          <output id="volumeValue" for="volume">80%</output>
+        </label>
+      </div>
+
+      <div class="playlist-heading">
+        <h2>Playlist</h2>
+        <span id="playlistCount">0 TRACKS</span>
+      </div>
+      <ol id="playlist" class="playlist" aria-label="Playlist"></ol>
+      <p id="emptyMessage" class="empty-message hidden">No tracks are available yet. Add your MP3 files to the <code>music</code> folder, following its README.</p>
+      <audio id="audioPlayer" preload="metadata"></audio>
+    </section>
+
+    <footer class="music-player-footer">
+      <span class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</span>
+      <a class="repository-link" href="https://github.com/vuieee/joshua-omamalin/tree/main/projects/music-player" target="_blank" rel="noopener">View repository</a>
+    </footer>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
