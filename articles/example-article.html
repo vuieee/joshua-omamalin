@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Journey to Arch Linux — Joshua Omamalin</title>
+<meta name="description" content="Why I left Windows for a DIY Arch Linux setup.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../css/content.min.57d898a4ad93e80d72ac39ad82fda7fa57a2b0c03f6308028670a78f7bf733b8.css">
+<link rel="stylesheet" href="../css/index.css">
+</head>
+<body class="index">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../cv/">CV</a><a class="slide" href="../publications/">Publications</a><a class="slide" href="../articles/" aria-current="page">Articles</a><a class="slide" href="../projects/">Side Projects</a></nav>
+    </header>
+    <h1>SWITCHING TO LINUX</h1>
+    <p class="dir-foot">Published 2026-11-05 &middot; 2 min read</p>
+    <hr>
+    <article class="content">
+      <h2>MY JOURNEY TO ARCH LINUX: BEYOND WINDOWS</h2>
+      <p>For years, Windows was the default. It's what came on the laptop, it's what everyone used, and it's what gaming supposedly required. But eventually, the forced updates, background telemetry, and ever-increasing system bloat became too much to ignore. I needed a system that did exactly what I told it to do. Nothing more, nothing less. Enter Arch Linux.</p>
+
+      <h2>Why Arch?</h2>
+      <p>The appeal of Arch Linux lies in its DIY philosophy. Unlike Ubuntu or Mint, which give you a pre-configured desktop, Arch gives you a black terminal screen and a blinking cursor. You build your OS from the ground up.</p>
+
+      <h2>The Installation</h2>
+      <p>The Arch Wiki is the holy grail here. After flashing the ISO to a USB, you boot into the live environment. Here are the core commands that shaped my system:</p>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Command</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Partitioning the drive (using fdisk)</td><td><pre><code>fdisk /dev/nvme0n1</code></pre></td></tr>
+          <tr><td>2</td><td>Formatting the partitions</td><td><pre><code>mkfs.ext4 /dev/nvme0n1p2
+mkfs.fat -F 32 /dev/nvme0n1p1</code></pre></td></tr>
+          <tr><td>3</td><td>Installing the base system</td><td><pre><code>pacstrap /mnt base linux linux-firmware neovim git</code></pre></td></tr>
+          <tr><td>4</td><td>Generating the fstab file</td><td><pre><code>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</code></pre></td></tr>
+          <tr><td>5</td><td>Chroot into system</td><td><pre><code>arch-chroot /mnt</code></pre></td></tr>
+        </tbody>
+      </table>
+
+      <h2>The Window Manager</h2>
+      <p>I ditched standard Desktop Environments (like GNOME or KDE) for a Window Manager. Tiling WMs completely change how you interact with your computer. No more dragging windows around with a mouse—everything is keyboard-driven and automatically tiles to utilize screen space perfectly.</p>
+      <p>I settled on Hyprland (for Wayland) because of the buttery smooth animations and dynamic tiling. My package manager pacman became my best friend:</p>
+      <pre><code>sudo pacman -S hyprland waybar kitty rofi</code></pre>
+
+      <h2>The Verdict</h2>
+      <p>Switching to Linux wasn't just about changing an OS; it was about reclaiming ownership of my hardware. The learning curve is steep, but the view from the top is absolutely worth it.</p>
+    </article>
+    <hr>
+    <p class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</p>
+  </main>
+</div>
+<script src="../js/copy-code.js"></script>
+</body>
+</html>

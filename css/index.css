@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+/* Homepage theme: warm off-white, charcoal, and terracotta. */
+:root{
+  --bg_h:#141414;
+  --bg:#1a1a1a;
+  --bg_s:#1e1e1e;
+  --bg1:#292929;
+  --bg2:#363636;
+  --bg3:#525252;
+  --bg4:#77736e;
+  --fg:#e4ded3;
+  --fg1:#eee7dc;
+  --fg2:#d0c8bd;
+  --fg3:#aaa095;
+  --fg4:#85796f;
+  --red:#d98a86;
+  --green:#c3a895;
+  --yellow:#d8b17f;
+  --blue:#83b9e8;
+  --purple:#bc9ba9;
+  --aqua:#c4a99e;
+  --gray:#aaa095;
+  --orange:#e0a17e;
+  --red-dim:#9e5d5a;
+  --green-dim:#80685b;
+  --yellow-dim:#96754f;
+  --blue-dim:#5d8db5;
+  --purple-dim:#806472;
+  --aqua-dim:#80685e;
+  --gray-dim:#504542;
+  --orange-dim:#9d634d;
+}
+
+/* Layout for every page. Uses the colour variables from common.css */
+html{scrollbar-gutter:stable}
+body.index #wrapper{max-width:900px}
+#wrapper{font-family:"JetBrains Mono",monospace}
+.listing{width:100%;max-width:100%}
+.listing hr{margin-top:.6rem;margin-bottom:1rem}
+
+/* Top bar: name (links home) ——— section links */
+.topbar{display:flex;align-items:center;width:100%;margin-bottom:.6rem;flex-shrink:0;font-family:Aleo,Iosevka,sans-serif}
+.topbar a.slide,.topbar a.slide:hover{color:var(--fg)}
+.topbar a.slide:after{background-color:var(--fg)}
+.topbar .brand{font-size:1.1rem;white-space:nowrap}
+.topbar .line{flex:1;height:2px;background:var(--fg3);margin:0 .9rem;min-width:1rem}
+.topbar nav{display:flex;gap:0 1.8rem;font-size:1.1rem;white-space:nowrap}
+@media screen and (max-width:700px){
+  .topbar{flex-direction:column;align-items:center;gap:.5rem}
+  .topbar .line{display:none}
+  .topbar nav{flex-wrap:wrap;justify-content:center}
+}
+
+/* sliding underline, same animation as the original nav */
+a.slide{position:relative;display:inline-block;color:var(--blue)}
+a.slide:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background-color:currentColor;transform:scaleX(0);transform-origin:bottom right;transition:transform .25s ease-out}
+a.slide:hover:after,a.slide[aria-current="page"]:after{transform:scaleX(1);transform-origin:bottom left}
+a.slide:hover{color:var(--blue-dim)}
+a:not(.slide){position:relative;display:inline-block}
+a:not(.slide):after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background-color:currentColor;transform:scaleX(0);transform-origin:bottom right;transition:transform .25s ease-out}
+a:not(.slide):hover:after,a:not(.slide):focus-visible:after{transform:scaleX(1);transform-origin:bottom left}
+a:not(.slide):hover{color:var(--blue-dim);text-decoration:none}
+.content a:not(.slide):hover{text-decoration:none}
+.about a.social-github,.about a.social-linkedin,.pdf-open a.slide,.pdf-frame p a{color:var(--blue)}
+.about a.social-github:after,.about a.social-linkedin:after,.pdf-open a.slide:after{background-color:currentColor}
+.about a.social-github:hover,.about a.social-linkedin:hover{text-decoration:none}
+
+/* Listing tables (Publications, Articles, Side Projects) */
+.dir-wrap{overflow-x:auto;margin-bottom:1.2rem}
+table.dir{width:100%;border-collapse:collapse;font-size:1rem}
+.dir th{font-family:"JetBrains Mono",monospace;font-weight:600;text-align:left;color:var(--fg1);padding:.35rem 1.2rem .35rem 0;border-bottom:2px solid var(--fg4);white-space:nowrap}
+.dir td{padding:.35rem 1.2rem .35rem 0;vertical-align:baseline}
+.dir td.meta{font-family:"JetBrains Mono",monospace;font-size:.9rem;color:var(--fg3);white-space:nowrap}
+.dir td.desc{color:var(--fg2)}
+.dir tbody tr{transition:background-color .2s ease-out}
+.dir tbody tr:hover{background-color:var(--bg_s)}
+.dir .tag{font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--fg4);margin-right:.6rem}
+.dir .name-cell{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:.5rem;align-items:start}
+.dir .name-cell .tag{margin-right:0}
+.dir .name-cell a.slide{min-width:0}
+.dir td a:not(.slide){color:var(--blue)}
+.project-list{margin-top:1.6rem}
+.project-item{margin-bottom:1.2rem}
+.project-item h2{font-family:"JetBrains Mono",monospace;font-size:1.3rem;font-weight:400;line-height:1.5;margin:0 0 .45rem}
+.project-item h2 a{color:var(--blue)}
+.project-item h2 a:hover{color:var(--blue-dim)}
+.project-description{background:none;border-left:2px solid var(--fg4);border-radius:0;font-style:normal;margin:0 0 0 .5rem;padding:0 0 0 1rem;color:var(--fg2)}
+.project-description p{margin:0}
+.article-disclaimer{border-left:2px solid var(--fg4);color:var(--fg3);font-size:.9rem;margin:.5rem 0 1.2rem;padding:.15rem 0 .15rem 1rem}
+.article-disclaimer strong{color:var(--fg2)}
+
+/* Footer, articles, home */
+.dir-foot{font-family:"JetBrains Mono",monospace;font-size:.85rem;color:var(--fg4);margin-top:.2rem}
+.listing h1{font-family:"JetBrains Mono",monospace;font-size:2.1rem;font-weight:500;line-height:1.3;margin-bottom:.4rem;overflow-wrap:anywhere}
+.nf{font-family:"JetBrains Mono",monospace;font-weight:500;margin-bottom:.8rem}
+.about{margin-top:.6rem}
+.about img{outline:1px solid var(--fg);margin-top:2.8rem}
+.about:after{content:"";display:block;clear:both}
+.about h2{font-family:"JetBrains Mono",monospace;font-size:1.6rem;font-weight:500;margin-bottom:.8rem}
+.about.content h2{font-family:"JetBrains Mono",monospace}
+#wrapper h1,#wrapper h2,#wrapper h3,#wrapper h4,#wrapper h5,#wrapper h6,#wrapper blockquote,#wrapper pre,#wrapper code{font-family:"JetBrains Mono",monospace}
+
+/* CV page: wide PDF viewer that fits the window; only the PDF scrolls */
+body.cv{overflow:hidden}
+body.cv,body.publication-viewer{overflow:hidden}
+body.cv #wrapper,body.publication-viewer #wrapper{height:100vh;height:100dvh;min-height:0}
+body.cv #main,body.publication-viewer #main{min-height:0}
+body.publication-viewer .listing h1{font-size:1.55rem;line-height:1.3}
+.pdf-open{text-align:right;margin-bottom:.8rem;font-size:1.1rem}
+.pdf-frame{display:block;flex:1 1 auto;width:100%;min-height:0;border:2px solid var(--fg4);background:var(--bg_s);margin-bottom:1.2rem}
+.pdf-frame p{padding:1rem}
