@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Libraries in C — Joshua Omamalin</title>
+<meta name="description" content="An introduction to C program structure, standard libraries, memory management, and reusable user-defined libraries.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../touch-icon.png">
+<link rel="stylesheet" href="../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../css/content.min.57d898a4ad93e80d72ac39ad82fda7fa57a2b0c03f6308028670a78f7bf733b8.css">
+<link rel="stylesheet" href="../css/index.css">
+</head>
+<body class="index">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../cv/">CV</a><a class="slide" href="../publications/">Publications</a><a class="slide" href="../articles/" aria-current="page">Articles</a><a class="slide" href="../projects/">Side Projects</a></nav>
+    </header>
+    <h1>STRUCTURE AND LIBRARIES IN C</h1>
+    <p class="dir-foot">Published 2026-11-06 &middot; 8 min read</p>
+    <hr>
+    <article class="content language-c">
+      <h2>PROGRAM STRUCTURE</h2>
+      <h3>Header Files and Source Files</h3>
+      <p>A header file (<code>.h</code>) acts as an interface. It usually contains declarations such as function prototypes, structure definitions, and macros. A source file (<code>.c</code>) contains implementations: the function bodies and program logic.</p>
+      <p>Separating declarations from definitions makes code easier to organize and reuse. Other source files can include a header to learn how to call a function without needing its implementation. When an implementation changes, a build system can recompile the affected source file and relink the program.</p>
+
+      <h3>What Does <code>#include</code> Do?</h3>
+      <p>The C preprocessor handles <code>#include</code> before compilation. It processes the named file as part of the current translation unit.</p>
+      <ul>
+        <li><code>#include &lt;file.h&gt;</code> conventionally searches the compiler's configured system include paths, which are used for standard or installed headers.</li>
+        <li><code>#include "file.h"</code> conventionally searches the source file's local directory first, then the configured include paths. This form is commonly used for project headers.</li>
+      </ul>
+
+      <h3>Include Guards</h3>
+      <p>Include guards prevent a header from being processed more than once in a translation unit. Without them, the same declarations may be encountered repeatedly and cause redefinition errors. A traditional guard looks like this:</p>
+      <pre><code>#ifndef MATH_TOOLS_H
+#define MATH_TOOLS_H
+
+int add_numbers(int a, int b);
+
+#endif</code></pre>
+      <p><code>#pragma once</code> is another widely supported option, though it is not part of the C standard.</p>
+
+      <h2>STANDARD C LIBRARIES</h2>
+      <h3><code>&lt;string.h&gt;</code>: Working with Strings</h3>
+      <p>C strings are character arrays terminated by a null character, <code>'\0'</code>. Functions in <code>&lt;string.h&gt;</code> work with this convention.</p>
+
+      <h4><code>strlen</code></h4>
+      <p><code>strlen</code> counts the characters before a string's terminating null character. It does not include that terminator.</p>
+      <p>Signature: <code>size_t strlen(const char *str);</code> A common use is checking whether a password meets a minimum length.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    char password[] = "secret123";
+
+    printf("Length: %zu\n", strlen(password));
+    return 0;
+}</code></pre>
+      <p>Output: <code>Length: 9</code></p>
+
+      <h4><code>strcpy</code></h4>
+      <p><code>strcpy</code> copies a source string, including its terminating null character. The destination must have enough space for the entire string and terminator.</p>
+      <p>Signature: <code>char *strcpy(char *dest, const char *src);</code> For example, it can copy a known, short default name into a user profile buffer when the buffer is large enough.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    char username[20];
+
+    strcpy(username, "Admin");
+    printf("User is: %s\n", username);
+    return 0;
+}</code></pre>
+      <p>Output: <code>User is: Admin</code></p>
+      <p>Do not use <code>strcpy</code> unless the destination capacity is known to be sufficient. For input that may be too long, validate the length or use an approach that explicitly limits and checks the copied data.</p>
+
+      <h4><code>strcmp</code></h4>
+      <p><code>strcmp</code> compares two strings lexicographically. It returns zero when they are equal, a negative value when the first differing character in the first string is lower, or a positive value when it is higher.</p>
+      <p>Signature: <code>int strcmp(const char *str1, const char *str2);</code> It can be used to compare a command against a reserved word such as <code>EXIT</code>.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    int result = strcmp("apple", "apple");
+
+    printf("Comparison result: %d\n", result);
+    return 0;
+}</code></pre>
+      <p>Output: <code>Comparison result: 0</code></p>
+
+      <h3><code>&lt;ctype.h&gt;</code>: Working with Characters</h3>
+      <p>Character classification and conversion functions accept an <code>int</code> value representing either <code>EOF</code> or a value representable as <code>unsigned char</code>. When passing a possibly signed <code>char</code>, convert it to <code>unsigned char</code> first.</p>
+
+      <h4><code>tolower</code> and <code>toupper</code></h4>
+      <p><code>tolower</code> converts an uppercase letter to lowercase, and <code>toupper</code> converts a lowercase letter to uppercase. Other characters are returned unchanged.</p>
+      <p>Signatures: <code>int tolower(int c);</code> and <code>int toupper(int c);</code> They can help normalize user input before checking a yes-or-no response.</p>
+      <pre><code>#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char c = 'A';
+
+    printf("Lower: %c\n", tolower((unsigned char)c));
+    return 0;
+}</code></pre>
+      <p>Output: <code>Lower: a</code></p>
+
+      <h4><code>isdigit</code>, <code>isalpha</code>, and <code>isalnum</code></h4>
+      <p>These functions test whether a character is a decimal digit, alphabetic letter, or alphanumeric character. They return zero when the character does not match and a nonzero value when it does.</p>
+      <p>Signatures: <code>int isdigit(int c);</code>, <code>int isalpha(int c);</code>, and <code>int isalnum(int c);</code>. For example, <code>isdigit</code> can validate that an input character is a digit.</p>
+      <pre><code>#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char test = '7';
+
+    if (isdigit((unsigned char)test)) {
+        printf("It is a digit!\n");
+    }
+    return 0;
+}</code></pre>
+      <p>Output: <code>It is a digit!</code></p>
+
+      <h4><code>islower</code> and <code>isupper</code></h4>
+      <p><code>islower</code> checks whether a character is a lowercase letter; <code>isupper</code> checks for an uppercase letter.</p>
+      <p>Signatures: <code>int islower(int c);</code> and <code>int isupper(int c);</code> These checks can help enforce a password rule that requires both letter cases.</p>
+      <pre><code>#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char test = 'g';
+
+    if (islower((unsigned char)test)) {
+        printf("Lower case detected.\n");
+    }
+    return 0;
+}</code></pre>
+      <p>Output: <code>Lower case detected.</code></p>
+
+      <h3><code>&lt;stdbool.h&gt;</code>: Booleans in C</h3>
+      <p>In C99 through C17, including <code>&lt;stdbool.h&gt;</code> provides the names <code>bool</code>, <code>true</code>, and <code>false</code>. These are macros for the language's <code>_Bool</code> type and the values <code>1</code> and <code>0</code>. C23 makes these names part of the language, so the header is no longer needed for them in that standard.</p>
+      <p>Use a boolean to make a condition such as whether a user is signed in or a task is complete clearer than using an unexplained integer.</p>
+      <pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    bool is_ready = true;
+
+    printf("Ready: %s\n", is_ready ? "yes" : "no");
+    return 0;
+}</code></pre>
+      <p>Before C99, programmers commonly represented false with zero and true with a nonzero integer, sometimes defining their own <code>TRUE</code> and <code>FALSE</code> macros.</p>
+
+      <h3><code>memcpy</code>: Copying Raw Memory</h3>
+      <p><code>memcpy</code> copies a specified number of bytes from one memory region to another. Unlike <code>strcpy</code>, it does not look for a null terminator, so the caller must provide the correct byte count. The source and destination regions must not overlap; use <code>memmove</code> when they might.</p>
+      <p>Signature: <code>void *memcpy(void *dest, const void *src, size_t n);</code> It can copy a fixed-size array of structures, such as a set of player coordinates for a checkpoint.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    int src_array[3] = {10, 20, 30};
+    int dest_array[3];
+
+    memcpy(dest_array, src_array, sizeof src_array);
+    printf("First element: %d\n", dest_array[0]);
+    return 0;
+}</code></pre>
+      <p>Output: <code>First element: 10</code></p>
+
+      <h3><code>&lt;stdlib.h&gt;</code>: Dynamic Memory Management</h3>
+      <p>Dynamic allocation is useful when the amount of storage needed is determined while a program runs. Include <code>&lt;stdlib.h&gt;</code> for these functions, check allocation results, and release owned memory with <code>free</code>.</p>
+
+      <h4><code>malloc</code></h4>
+      <p><code>malloc</code> requests a block of memory of the specified size. The returned memory is uninitialized, and the function returns a null pointer if allocation fails.</p>
+      <p>Signature: <code>void *malloc(size_t size);</code> One use is allocating an image buffer when its required size is only known at runtime.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int *arr = malloc(2 * sizeof *arr);
+    if (arr == NULL) {
+        return 1;
+    }
+
+    arr[0] = 42;
+    printf("Allocated: %d\n", arr[0]);
+    free(arr);
+    return 0;
+}</code></pre>
+
+      <h4><code>calloc</code></h4>
+      <p><code>calloc</code> allocates space for an array of elements and initializes all its bytes to zero. Always check the returned pointer before using it.</p>
+      <p>Signature: <code>void *calloc(size_t num, size_t size);</code> It is useful when an array should start with every byte set to zero, such as a table of counters.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int *arr = calloc(2, sizeof *arr);
+    if (arr == NULL) {
+        return 1;
+    }
+
+    printf("Initialized to: %d\n", arr[1]);
+    free(arr);
+    return 0;
+}</code></pre>
+      <p>Output: <code>Initialized to: 0</code></p>
+
+      <h4><code>realloc</code></h4>
+      <p><code>realloc</code> changes the size of an allocated block. It may keep the block in place or move its contents to a new block. If it fails, it returns <code>NULL</code> and leaves the original allocation intact. Store the result in a temporary pointer so a failure does not lose the original address.</p>
+      <p>Signature: <code>void *realloc(void *ptr, size_t new_size);</code> It can grow a dynamic array when more entries need to be stored.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int *arr = malloc(sizeof *arr);
+    if (arr == NULL) {
+        return 1;
+    }
+    arr[0] = 55;
+
+    int *resized = realloc(arr, 2 * sizeof *arr);
+    if (resized == NULL) {
+        free(arr);
+        return 1;
+    }
+    arr = resized;
+    arr[1] = 99;
+
+    printf("Resized: %d, %d\n", arr[0], arr[1]);
+    free(arr);
+    return 0;
+}</code></pre>
+      <p>Output: <code>Resized: 55, 99</code></p>
+
+      <h4><code>free</code>, Memory Leaks, and Allocation Failures</h4>
+      <p><code>free</code> releases a block previously returned by a compatible allocation function. A memory leak occurs when a program no longer has a way to reach an allocation but never releases it. Repeated leaks can waste memory over time. Dereferencing a null pointer after a failed allocation is invalid and commonly causes a crash, so check allocation results before use.</p>
+      <p>Signature: <code>void free(void *ptr);</code> Free each allocation when the program is finished using it, and do not use the pointer afterward.</p>
+
+      <h2>USER-DEFINED LIBRARIES</h2>
+      <p>A small reusable library can be split into a header with declarations and a source file with implementations.</p>
+
+      <h3>1. Header: <code>math_tools.h</code></h3>
+      <pre><code>#ifndef MATH_TOOLS_H
+#define MATH_TOOLS_H
+
+int add_numbers(int a, int b);
+
+#endif</code></pre>
+
+      <h3>2. Implementation: <code>math_tools.c</code></h3>
+      <pre><code>#include "math_tools.h"
+
+int add_numbers(int a, int b) {
+    return a + b;
+}</code></pre>
+
+      <h3>3. Use the Library: <code>main.c</code></h3>
+      <p>Include the project header with quotes. Compile and link both source files:</p>
+      <pre><code>gcc main.c math_tools.c -o program</code></pre>
+      <pre><code>#include &lt;stdio.h&gt;
+#include "math_tools.h"
+
+int main(void) {
+    printf("Sum: %d\n", add_numbers(5, 10));
+    return 0;
+}</code></pre>
+      <p>Output: <code>Sum: 15</code></p>
+
+      <h3>Standard and User-Defined Libraries</h3>
+      <p>Standard library headers, such as <code>&lt;string.h&gt;</code>, are supplied with a C implementation and are included with angle brackets. User-defined headers belong to a project and are commonly included with quotes. The project source files that provide the implementation must also be compiled and linked into the program.</p>
+    </article>
+    <hr>
+    <p class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</p>
+  </main>
+</div>
+<script src="../js/highlight-c.js"></script>
+<script src="../js/copy-code.js"></script>
+</body>
+</html>

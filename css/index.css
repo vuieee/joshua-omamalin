@@ -40,7 +40,8 @@ body.index #wrapper{max-width:900px}
 .listing hr{margin-top:.6rem;margin-bottom:1rem}
 
 /* Top bar: name (links home) ——— section links */
-.topbar{display:flex;align-items:center;width:100%;margin-bottom:.6rem;flex-shrink:0;font-family:Aleo,Iosevka,sans-serif}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;width:100%;margin-bottom:.6rem;padding:.55rem 0;background:var(--bg);flex-shrink:0;font-family:Aleo,Iosevka,sans-serif}
+.topbar:after{content:"";position:absolute;top:100%;left:-1rem;right:-1rem;height:1.1rem;background:linear-gradient(to bottom,var(--bg),transparent);pointer-events:none}
 .topbar a.slide,.topbar a.slide:hover{color:var(--fg)}
 .topbar a.slide:after{background-color:var(--fg)}
 .topbar .brand{font-size:1.1rem;white-space:nowrap}
@@ -71,6 +72,7 @@ a:not(.slide):hover{color:var(--blue-dim);text-decoration:none}
 table.dir{width:100%;border-collapse:collapse;font-size:1rem}
 .dir th{font-family:"JetBrains Mono",monospace;font-weight:600;text-align:left;color:var(--fg1);padding:.35rem 1.2rem .35rem 0;border-bottom:2px solid var(--fg4);white-space:nowrap}
 .dir td{padding:.35rem 1.2rem .35rem 0;vertical-align:baseline}
+.dir th.uploaded,.dir td.uploaded{text-align:right;padding-right:0}
 .dir td.meta{font-family:"JetBrains Mono",monospace;font-size:.9rem;color:var(--fg3);white-space:nowrap}
 .dir td.desc{color:var(--fg2)}
 .dir tbody tr{transition:background-color .2s ease-out}
@@ -78,7 +80,7 @@ table.dir{width:100%;border-collapse:collapse;font-size:1rem}
 .dir .tag{font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--fg4);margin-right:.6rem}
 .dir .name-cell{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:.5rem;align-items:start}
 .dir .name-cell .tag{margin-right:0}
-.dir .name-cell a.slide{min-width:0}
+.dir .name-cell a.slide{justify-self:start;max-width:100%;min-width:0}
 .dir td a:not(.slide){color:var(--blue)}
 .project-list{margin-top:1.6rem}
 .project-item{margin-bottom:1.2rem}
@@ -87,6 +89,17 @@ table.dir{width:100%;border-collapse:collapse;font-size:1rem}
 .project-item h2 a:hover{color:var(--blue-dim)}
 .project-description{background:none;border-left:2px solid var(--fg4);border-radius:0;font-style:normal;margin:0 0 0 .5rem;padding:0 0 0 1rem;color:var(--fg2)}
 .project-description p{margin:0}
+.listing article.content p{text-align:justify;hyphens:auto}
+.content .code-block{position:relative;margin-bottom:1.2rem}
+.content .code-block>pre{margin-bottom:0}
+article.language-c .code-keyword{color:var(--purple)}
+article.language-c .code-type{color:var(--aqua)}
+article.language-c .code-string{color:var(--green)}
+article.language-c .code-number{color:var(--orange)}
+article.language-c .code-constant{color:var(--yellow)}
+article.language-c .code-function{color:var(--blue)}
+article.language-c .code-preprocessor{color:var(--orange)}
+article.language-c .code-comment{color:var(--fg4);font-style:italic}
 .article-disclaimer{border-left:2px solid var(--fg4);color:var(--fg3);font-size:.9rem;margin:.5rem 0 1.2rem;padding:.15rem 0 .15rem 1rem}
 .article-disclaimer strong{color:var(--fg2)}
 

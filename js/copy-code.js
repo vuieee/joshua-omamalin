@@ -3,8 +3,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const preBlocks = document.querySelectorAll("pre");
 
   preBlocks.forEach(function (block) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-block";
+    block.parentNode.insertBefore(wrapper, block);
+    wrapper.appendChild(block);
+
     const copyButton = document.createElement("button");
     copyButton.classList.add("copy-button");
+    copyButton.setAttribute("aria-label", "Copy code");
 
     // copy and check SVG icons
     const svgCopy =
@@ -38,6 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    block.appendChild(copyButton);
+    wrapper.appendChild(copyButton);
   });
 });
