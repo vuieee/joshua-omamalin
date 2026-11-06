@@ -33,6 +33,10 @@ const Debt = {
     return debt.amount + this.interestAccumulated(debt);
   },
 
+  isOwedToYou(debt){
+    return debt.direction !== 'i-owe';
+  },
+
   daysOverdue(debt){
     if(debt.status === 'paid') return 0;
     const days = Utils.daysBetween(Utils.parseDate(debt.dueDate), new Date());
@@ -55,9 +59,10 @@ const Debt = {
   render(){
     const el = document.getElementById('view-debt');
     const debts = Store.state.debts;
-    const totalOwed = debts.reduce((s,d)=>s+this.currentOwed(d),0);
+    const owedToYou = debts.filter(d=>this.isOwedToYou(d)).reduce((s,d)=>s+this.currentOwed(d),0);
+    const youOwe = debts.filter(d=>!this.isOwedToYou(d)).reduce((s,d)=>s+this.currentOwed(d),0);
     const overdueCount = debts.filter(d=>this.effectiveStatus(d)==='overdue').length;
-    const totalCollected = debts.reduce((s,d)=>s+this.totalPaid(d),0);
+    const totalReceived = debts.filter(d=>this.isOwedToYou(d)).reduce((s,d)=>s+this.totalPaid(d),0);
 
     el.innerHTML = `
       <div class="section-head">
@@ -65,18 +70,18 @@ const Debt = {
           <div class="section-title">Debt Tracker</div>
           <div class="section-sub">${debts.length} entr${debts.length===1?'y':'ies'} · ${overdueCount} overdue</div>
         </div>
-        <button class="btn btn-primary" id="newDebtBtn">+ NEW DEBT ENTRY</button>
+        <button class="btn btn-primary" id="newDebtBtn">+ NEW ENTRY</button>
       </div>
 
       <div class="grid grid-3" style="margin-bottom:var(--gap);">
-        <div class="card"><div class="card-label">Total Outstanding</div><div class="card-value">${Utils.fmtMoney(totalOwed)}</div></div>
-        <div class="card"><div class="card-label">Total Collected</div><div class="card-value">${Utils.fmtMoney(totalCollected)}</div></div>
-        <div class="card"><div class="card-label">Overdue Entries</div><div class="card-value ${overdueCount?'text-accent':''}">${overdueCount}</div></div>
+        <div class="card"><div class="card-label">Owed to You</div><div class="card-value">${Utils.fmtMoney(owedToYou)}</div><div class="card-sub">Includes money others owe you</div></div>
+        <div class="card"><div class="card-label">You Owe</div><div class="card-value">${Utils.fmtMoney(youOwe)}</div><div class="card-sub">Money you owe others</div></div>
+        <div class="card"><div class="card-label">Total Received</div><div class="card-value">${Utils.fmtMoney(totalReceived)}</div></div>
       </div>
 
       ${debts.length ? `<div class="grid grid-2" id="debtGrid"></div>` : `
         <div class="empty-state">
-          <p>No debts tracked yet. Add an entry to start monitoring interest and payments.</p>
+          <p>No entries tracked yet. Add money you owe or money someone owes you.</p>
           <button class="btn btn-primary" id="newDebtBtn2">+ ADD FIRST ENTRY</button>
         </div>`}
     `;
@@ -90,26 +95,27 @@ const Debt = {
         const status = this.effectiveStatus(d);
         const owed = this.currentOwed(d);
         const pct = this.progressPct(d);
+        const receivable = this.isOwedToYou(d);
         return `
         <div class="card">
           <div class="flex-between" style="margin-bottom:10px;">
             <div>
-              <div class="card-value" style="font-size:17px;">${Utils.escapeHtml(d.borrower)}</div>
+              <div class="card-value" style="font-size:17px;">${receivable ? `${Utils.escapeHtml(d.borrower)} owes you` : `You owe ${Utils.escapeHtml(d.borrower)}`}</div>
               <div class="card-sub">${Utils.escapeHtml(d.phone||'')}</div>
             </div>
             <span class="badge ${status==='paid'?'ok':status==='overdue'?'warn':''}">${status.toUpperCase()}</span>
           </div>
           <div class="grid grid-2" style="gap:10px; margin-bottom:12px;">
-            <div><div class="card-label">Owed Now</div><div class="card-value" style="font-size:18px;">${Utils.fmtMoney(owed)}</div></div>
+            <div><div class="card-label">${receivable?'Owed to You':'You Owe'}</div><div class="card-value" style="font-size:18px;">${Utils.fmtMoney(owed)}</div></div>
             <div><div class="card-label">Interest Accrued</div><div class="card-value" style="font-size:18px;">${Utils.fmtMoney(this.interestAccumulated(d))}</div></div>
           </div>
           <div class="progress-wrap" style="margin-bottom:12px;">
             ${Utils.progressBar(pct)}
-            <div class="progress-meta"><span>Paid ${Utils.fmtMoney(this.totalPaid(d))}</span><span>Due ${Utils.fmtDateShort(d.dueDate)}</span></div>
+            <div class="progress-meta"><span>${receivable?'Received':'Paid'} ${Utils.fmtMoney(this.totalPaid(d))}</span><span>Due ${Utils.fmtDateShort(d.dueDate)}</span></div>
           </div>
           ${status==='overdue' ? `<div class="card-sub neg" style="margin-bottom:10px;">${this.daysOverdue(d)} days overdue</div>` : ''}
           <div class="btn-row">
-            <button class="btn btn-sm" data-pay="${d.id}">+ PAYMENT</button>
+            <button class="btn btn-sm" data-pay="${d.id}">${receivable?'+ RECEIVED':'+ PAYMENT'}</button>
             <button class="btn btn-sm" data-timeline="${d.id}">TIMELINE</button>
             <button class="btn btn-sm" data-edit="${d.id}">EDIT</button>
             <button class="btn btn-sm btn-danger" data-del="${d.id}">DELETE</button>
@@ -126,10 +132,16 @@ const Debt = {
   openDebtModal(editId){
     const editing = editId ? Store.state.debts.find(d=>d.id===editId) : null;
     Modal.open(editing ? 'Edit Debt Entry' : 'New Debt Entry', `
-      <div class="field"><label>Borrower Name</label><input id="dBorrower" value="${editing?Utils.escapeHtml(editing.borrower):''}"></div>
+      <div class="field"><label>Who owes whom?</label>
+        <select id="dDirection">
+          <option value="owed-to-me" ${!editing||this.isOwedToYou(editing)?'selected':''}>They owe me</option>
+          <option value="i-owe" ${editing&&!this.isOwedToYou(editing)?'selected':''}>I owe them</option>
+        </select>
+      </div>
+      <div class="field"><label>Other Person</label><input id="dBorrower" value="${editing?Utils.escapeHtml(editing.borrower):''}"></div>
       <div class="field-row">
-        <div class="field"><label>Amount Borrowed</label><input id="dAmount" type="number" min="0" step="0.01" value="${editing?editing.amount:''}"></div>
-        <div class="field"><label>Date Borrowed</label><input id="dDateBorrowed" type="date" value="${editing?editing.dateBorrowed:Utils.todayStr()}"></div>
+        <div class="field"><label>Starting Amount</label><input id="dAmount" type="number" min="0" step="0.01" value="${editing?editing.amount:''}"></div>
+        <div class="field"><label>Start Date</label><input id="dDateBorrowed" type="date" value="${editing?editing.dateBorrowed:Utils.todayStr()}"></div>
       </div>
       <div class="field-row">
         <div class="field"><label>Interest Rate (%)</label><input id="dRate" type="number" min="0" step="0.01" value="${editing?editing.rate:0}"></div>
@@ -171,6 +183,7 @@ const Debt = {
     document.getElementById('dCancel').onclick = () => Modal.close();
     document.getElementById('dSaveBtn').onclick = () => {
       const borrower = document.getElementById('dBorrower').value.trim();
+      const direction = document.getElementById('dDirection').value;
       const amount = parseFloat(document.getElementById('dAmount').value);
       const dateBorrowed = document.getElementById('dDateBorrowed').value;
       const rate = parseFloat(document.getElementById('dRate').value) || 0;
@@ -182,11 +195,11 @@ const Debt = {
       const notes = document.getElementById('dNotes').value.trim();
       if(!borrower || !amount || !dateBorrowed || !dueDate){ Toast.show('Please fill in all required fields.', {warn:true}); return; }
       if(editing){
-        Object.assign(editing, { borrower, amount, dateBorrowed, rate, dueDate, interestType, interestFreq, phone, status, notes });
+        Object.assign(editing, { borrower, direction, amount, dateBorrowed, rate, dueDate, interestType, interestFreq, phone, status, notes });
         Store.logActivity(`Updated debt entry for ${borrower}`, 'debt');
       } else {
-        Store.state.debts.push({ id: Utils.uid(), borrower, amount, dateBorrowed, rate, dueDate, interestType, interestFreq, phone, status, notes, payments:[] });
-        Store.logActivity(`Added debt entry for ${borrower} (${Utils.fmtMoney(amount)})`, 'debt');
+        Store.state.debts.push({ id: Utils.uid(), borrower, direction, amount, dateBorrowed, rate, dueDate, interestType, interestFreq, phone, status, notes, payments:[] });
+        Store.logActivity(`Added ${direction==='i-owe'?'debt owed to':'debt owed by'} ${borrower} (${Utils.fmtMoney(amount)})`, 'debt');
       }
       Modal.close();
       Core.refreshAllData();
@@ -195,8 +208,9 @@ const Debt = {
 
   openPaymentModal(id){
     const d = Store.state.debts.find(x=>x.id===id);
+    const receivable = this.isOwedToYou(d);
     Modal.open(`Record Payment — ${Utils.escapeHtml(d.borrower)}`, `
-      <div class="card-sub" style="margin-bottom:14px;">Currently owed: <strong>${Utils.fmtMoney(this.currentOwed(d))}</strong></div>
+      <div class="card-sub" style="margin-bottom:14px;">${receivable?'They owe you':'You owe them'}: <strong>${Utils.fmtMoney(this.currentOwed(d))}</strong></div>
       <div class="field-row">
         <div class="field"><label>Amount</label><input id="pAmount" type="number" min="0" step="0.01"></div>
         <div class="field"><label>Date</label><input id="pDate" type="date" value="${Utils.todayStr()}"></div>
@@ -204,7 +218,7 @@ const Debt = {
       <div class="field"><label>Notes</label><textarea id="pNotes"></textarea></div>
       <div class="modal-foot">
         <button class="btn" id="pCancel">Cancel</button>
-        <button class="btn btn-primary" id="pSave">Record Payment</button>
+        <button class="btn btn-primary" id="pSave">${receivable?'Record Received Payment':'Record Payment'}</button>
       </div>
     `);
     document.getElementById('pCancel').onclick = () => Modal.close();
@@ -215,8 +229,8 @@ const Debt = {
       if(!amount || !date){ Toast.show('Enter an amount and date.', {warn:true}); return; }
       if(!d.payments) d.payments = [];
       d.payments.push({ id: Utils.uid(), amount, date, notes });
-      if(this.currentOwed(d) - amount <= 0.5) d.status = 'paid';
-      Store.logActivity(`Recorded payment of ${Utils.fmtMoney(amount)} from ${d.borrower}`, 'debt');
+      if(this.currentOwed(d) <= 0.5) d.status = 'paid';
+      Store.logActivity(`${receivable?'Received payment from':'Paid'} ${d.borrower}: ${Utils.fmtMoney(amount)}`, 'debt');
       Modal.close();
       Core.refreshAllData();
     };
@@ -225,8 +239,8 @@ const Debt = {
   openTimelineModal(id){
     const d = Store.state.debts.find(x=>x.id===id);
     const events = [
-      { date:d.dateBorrowed, label:`Borrowed ${Utils.fmtMoney(d.amount)}` },
-      ...(d.payments||[]).map(p=>({ date:p.date, label:`Payment ${Utils.fmtMoney(p.amount)}${p.notes?' — '+p.notes:''}` })),
+      { date:d.dateBorrowed, label:`${this.isOwedToYou(d)?'Lent':'Borrowed'} ${Utils.fmtMoney(d.amount)}` },
+      ...(d.payments||[]).map(p=>({ date:p.date, label:`${this.isOwedToYou(d)?'Received':'Paid'} ${Utils.fmtMoney(p.amount)}${p.notes?' — '+p.notes:''}` })),
       { date:d.dueDate, label:'Due date' }
     ].sort((a,b)=>a.date.localeCompare(b.date));
     Modal.open(`Timeline — ${Utils.escapeHtml(d.borrower)}`, `

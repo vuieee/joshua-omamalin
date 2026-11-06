@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subnet Calculator | Joshua Omamalin</title>
+<meta name="description" content="Calculate IPv4 subnet ranges, masks, host capacity, and address waste.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../../css/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="index subnet-page">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../../cv/">CV</a><a class="slide" href="../../publications/">Publications</a><a class="slide" href="../../articles/">Rants</a><a class="slide" href="../" aria-current="page">Side Projects</a></nav>
+    </header>
+
+    <section class="subnet-calculator" aria-labelledby="subnetTitle">
+      <div class="subnet-heading">
+        <p class="subnet-eyebrow">NETWORK TOOL</p>
+        <h1 id="subnetTitle">IPv4 Subnet Calculator</h1>
+        <p>Explore the address range, host capacity, and how much of a subnet would remain unused.</p>
+      </div>
+
+      <form id="subnetForm" class="subnet-form" novalidate>
+        <div class="subnet-inputs">
+          <label>
+            <span>IPv4 address</span>
+            <input id="ipAddress" name="ipAddress" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="192.168.1.10" aria-describedby="subnetHelp">
+          </label>
+          <label>
+            <span>Prefix length</span>
+            <div class="prefix-input"><span aria-hidden="true">/</span><input id="prefixLength" name="prefixLength" type="number" min="0" max="32" step="1" value="24" inputmode="numeric" aria-label="Prefix length, 0 to 32"></div>
+          </label>
+          <label>
+            <span>Hosts needed <span class="optional">(optional)</span></span>
+            <input id="hostsNeeded" name="hostsNeeded" type="number" min="1" max="4294967294" step="1" placeholder="e.g. 50" inputmode="numeric">
+          </label>
+        </div>
+        <p id="subnetHelp" class="subnet-help">Enter an IPv4 address and CIDR prefix from 0 to 32.</p>
+        <button class="subnet-submit" type="submit">Calculate subnet</button>
+        <p id="subnetError" class="subnet-error" role="alert" hidden></p>
+      </form>
+
+      <section id="subnetResults" class="subnet-results" aria-labelledby="resultsTitle" aria-live="polite">
+        <div class="results-heading">
+          <h2 id="resultsTitle">Subnet details</h2>
+          <span id="cidrResult" class="cidr-result"></span>
+        </div>
+        <dl class="result-grid">
+          <div class="result-item"><dt>Network address</dt><dd id="networkAddress"></dd></div>
+          <div class="result-item"><dt>Broadcast address</dt><dd id="broadcastAddress"></dd></div>
+          <div class="result-item"><dt>Subnet mask</dt><dd id="subnetMask"></dd></div>
+          <div class="result-item"><dt>Wildcard mask</dt><dd id="wildcardMask"></dd></div>
+          <div class="result-item"><dt>First usable address</dt><dd id="firstHost"></dd></div>
+          <div class="result-item"><dt>Last usable address</dt><dd id="lastHost"></dd></div>
+          <div class="result-item"><dt>Total addresses</dt><dd id="totalAddresses"></dd></div>
+          <div class="result-item"><dt>Usable host addresses</dt><dd id="usableHosts"></dd></div>
+          <div class="result-item"><dt>Network bits</dt><dd id="networkBits"></dd></div>
+          <div class="result-item"><dt>Host bits</dt><dd id="hostBits"></dd></div>
+          <div class="result-item"><dt>Address in binary</dt><dd id="binaryAddress"></dd></div>
+        </dl>
+        <div id="capacityResult" class="capacity-result" hidden>
+          <h3>Host capacity</h3>
+          <p id="capacitySummary"></p>
+          <p id="minimumSubnet"></p>
+        </div>
+        <p class="subnet-note">For /31, both addresses are usable on point-to-point links. A /32 contains one usable address.</p>
+      </section>
+    </section>
+
+    <footer class="subnet-footer">
+      <span class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</span>
+      <a class="repository-link" href="https://github.com/vuieee/joshua-omamalin/tree/main/projects/subnet-calculator" target="_blank" rel="noopener">View repository</a>
+    </footer>
+  </main>
+</div>
+<script src="app.js"></script>
+<script src="../../js/overlay-scrollbar.js"></script>
+</body>
+</html>

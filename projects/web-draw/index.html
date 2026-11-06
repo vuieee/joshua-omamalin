@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Draw | Joshua Omamalin</title>
+<meta name="description" content="A simple browser drawing app. Draw with freehand and shape tools, then export as PNG, JPEG, or WebP.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../../css/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="index web-draw-page">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../../cv/">CV</a><a class="slide" href="../../publications/">Publications</a><a class="slide" href="../../articles/">Rants</a><a class="slide" href="../" aria-current="page">Side Projects</a></nav>
+    </header>
+
+    <section class="drawing-app" aria-labelledby="drawTitle">
+      <div class="drawing-heading">
+        <div>
+          <p class="drawing-eyebrow">A LITTLE DIGITAL SKETCHPAD</p>
+          <h1 id="drawTitle">Web Draw</h1>
+        </div>
+        <p id="drawingStatus" class="drawing-status" role="status" aria-live="polite">Pencil selected</p>
+      </div>
+
+      <div class="drawing-toolbar">
+        <div class="tool-group" role="group" aria-label="Drawing tools">
+          <button class="tool-button is-active" type="button" data-tool="pencil" aria-pressed="true" title="Pencil">Pencil</button>
+          <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false" title="Eraser">Eraser</button>
+          <button class="tool-button" type="button" data-tool="line" aria-pressed="false" title="Line">Line</button>
+          <button class="tool-button" type="button" data-tool="rectangle" aria-pressed="false" title="Rectangle">Rectangle</button>
+          <button class="tool-button" type="button" data-tool="ellipse" aria-pressed="false" title="Ellipse">Ellipse</button>
+        </div>
+
+        <div class="drawing-options">
+          <label class="color-control" for="brushColor"><span>Color</span><input id="brushColor" type="color" value="#202020"></label>
+          <label class="size-control" for="brushSize"><span>Size <output id="brushSizeValue" for="brushSize">6 px</output></span><input id="brushSize" type="range" min="1" max="40" value="6"></label>
+        </div>
+      </div>
+
+      <div class="canvas-view-controls" role="group" aria-label="Canvas zoom controls">
+        <button id="zoomOutButton" class="view-button" type="button" aria-label="Zoom out">−</button>
+        <output id="zoomLevel" class="zoom-level" aria-live="polite">100%</output>
+        <button id="zoomInButton" class="view-button" type="button" aria-label="Zoom in">+</button>
+        <button id="resetViewButton" class="view-button reset-view-button" type="button">Restore default view</button>
+      </div>
+
+      <div class="canvas-frame">
+        <canvas id="drawingCanvas" width="1440" height="900" aria-label="Drawing canvas. Use a mouse, pen, or touch to draw.">Your browser does not support canvas drawing.</canvas>
+      </div>
+
+      <div class="drawing-actions">
+        <div class="canvas-actions-group">
+          <button id="undoButton" class="action-button" type="button" disabled>Undo</button>
+          <button id="redoButton" class="action-button" type="button" disabled>Redo</button>
+          <button id="clearButton" class="action-button" type="button">Clear canvas</button>
+        </div>
+        <div class="export-controls">
+          <label for="exportFormat">Export as</label>
+          <select id="exportFormat" aria-label="Image export format">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="webp">WebP</option>
+          </select>
+          <button id="exportButton" class="action-button action-button-primary" type="button">Download</button>
+        </div>
+      </div>
+      <p class="canvas-note">PNG and WebP keep transparent areas. JPEG exports with a white background.</p>
+    </section>
+
+    <footer class="drawing-footer">
+      <span class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</span>
+      <a class="repository-link" href="https://github.com/vuieee/joshua-omamalin/tree/main/projects/web-draw" target="_blank" rel="noopener">View repository</a>
+    </footer>
+  </main>
+</div>
+<script src="app.js"></script>
+<script src="../../js/overlay-scrollbar.js"></script>
+</body>
+</html>

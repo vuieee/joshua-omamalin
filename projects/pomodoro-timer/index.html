@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pomodoro Timer | Joshua Omamalin</title>
+<meta name="description" content="A simple Pomodoro timer for focused work and restorative breaks.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../../css/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="index pomodoro-page">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../../cv/">CV</a><a class="slide" href="../../publications/">Publications</a><a class="slide" href="../../articles/">Rants</a><a class="slide" href="../" aria-current="page">Side Projects</a></nav>
+    </header>
+
+    <section class="pomodoro" aria-labelledby="pomodoroTitle">
+      <p class="pomodoro-eyebrow">FOCUS, THEN REST</p>
+      <h1 id="pomodoroTitle">Pomodoro Timer</h1>
+      <div class="session-tabs" role="group" aria-label="Timer mode">
+        <button class="session-tab is-active" type="button" data-mode="work" aria-pressed="true">Focus</button>
+        <button class="session-tab" type="button" data-mode="short" aria-pressed="false">Short break</button>
+        <button class="session-tab" type="button" data-mode="long" aria-pressed="false">Long break</button>
+      </div>
+      <div class="timer-display" role="timer" aria-label="Time remaining">
+        <span id="timerDisplay">25:00</span>
+      </div>
+      <p id="timerStatus" class="timer-status" role="status" aria-live="polite">Ready to focus</p>
+      <div class="timer-controls">
+        <button id="startButton" class="timer-button timer-button-primary" type="button">Start</button>
+        <button id="resetButton" class="timer-button" type="button">Reset</button>
+      </div>
+      <p id="sessionCount" class="session-count">0 of 4 focus sessions completed</p>
+    </section>
+
+    <footer class="pomodoro-footer">
+      <span class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</span>
+      <a class="repository-link" href="https://github.com/vuieee/joshua-omamalin/tree/main/projects/pomodoro-timer" target="_blank" rel="noopener">View repository</a>
+    </footer>
+  </main>
+</div>
+<script src="app.js"></script>
+<script src="../../js/overlay-scrollbar.js"></script>
+</body>
+</html>

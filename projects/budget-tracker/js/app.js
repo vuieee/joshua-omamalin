@@ -299,7 +299,7 @@ const Search = {
     });
     s.debts.forEach(d=>{
       if(d.borrower.toLowerCase().includes(q) || (d.notes||'').toLowerCase().includes(q))
-        out.push({label:`${d.borrower} — ${Utils.fmtMoney(d.amount)}`, tag:'DEBT', view:'debt'});
+        out.push({label:`${d.borrower} — ${Utils.fmtMoney(d.amount)}`, tag:Debt.isOwedToYou(d)?'OWED TO YOU':'YOU OWE', view:'debt'});
     });
     s.categories.forEach(c=>{ if(c.toLowerCase().includes(q)) out.push({label:c, tag:'CATEGORY', view:'budget'}); });
     return out.slice(0,20);
@@ -335,7 +335,7 @@ const Dashboard = {
   render(){
     const el = document.getElementById('view-dashboard');
     const now = new Date();
-    const totalDebtOwed = Store.state.debts.reduce((s,d)=>s+Debt.currentOwed(d),0);
+    const totalDebtOwed = Store.state.debts.filter(d=>Debt.isOwedToYou(d)).reduce((s,d)=>s+Debt.currentOwed(d),0);
     const goal = this.upcomingGoal();
     const health = Budget.healthScore();
     const recent = Store.state.activity.slice(0,8);
@@ -356,7 +356,7 @@ const Dashboard = {
       <div class="grid grid-4" style="margin-bottom:var(--gap);">
         <div class="card"><div class="card-label">Current Savings</div><div class="card-value">${Utils.fmtMoney(this.totalSavings())}</div><div class="card-sub">across ${Store.state.goals.length} goal(s)</div></div>
         <div class="card"><div class="card-label">Remaining Budget</div><div class="card-value">${Utils.fmtMoney(Budget.remainingBudget())}</div><div class="card-sub">${Store.state.budgetConfig.type} plan</div></div>
-        <div class="card"><div class="card-label">Current Debt Owed</div><div class="card-value">${Utils.fmtMoney(totalDebtOwed)}</div><div class="card-sub">${Store.state.debts.filter(d=>Debt.effectiveStatus(d)==='overdue').length} overdue</div></div>
+        <div class="card"><div class="card-label">Owed to You</div><div class="card-value">${Utils.fmtMoney(totalDebtOwed)}</div><div class="card-sub">You owe ${Utils.fmtMoney(Store.state.debts.filter(d=>!Debt.isOwedToYou(d)).reduce((s,d)=>s+Debt.currentOwed(d),0))} · ${Store.state.debts.filter(d=>Debt.effectiveStatus(d)==='overdue').length} overdue</div></div>
         <div class="card"><div class="card-label">Weekly / Monthly Spend</div><div class="card-value" style="font-size:20px;">${Utils.fmtMoney(Budget.spentThisWeek())}</div><div class="card-sub">${Utils.fmtMoney(Budget.spentThisMonth())} this month</div></div>
       </div>
 
@@ -417,7 +417,7 @@ const Analytics = {
     return Utils.clamp(100 - (Math.abs(projected-cfg.amount)/cfg.amount)*100, 0, 100);
   },
   collectionRate(){
-    const debts = Store.state.debts;
+    const debts = Store.state.debts.filter(d=>Debt.isOwedToYou(d));
     if(!debts.length) return 0;
     const total = debts.reduce((s,d)=>s+Debt.totalCollectable(d),0);
     const collected = debts.reduce((s,d)=>s+Debt.totalPaid(d),0);
@@ -436,7 +436,7 @@ const Analytics = {
     return Dashboard.totalSavings() + dailyRate*daysLeft;
   },
   projectedDebtCollection(){
-    return Store.state.debts.filter(d=>d.status!=='paid').reduce((s,d)=>s+Debt.currentOwed(d),0);
+    return Store.state.debts.filter(d=>Debt.isOwedToYou(d)&&d.status!=='paid').reduce((s,d)=>s+Debt.currentOwed(d),0);
   },
   heatmapData(){
     const map = {};
@@ -482,7 +482,9 @@ const Analytics = {
     const saved = Dashboard.totalSavings();
     const spent = Budget.totalSpentAllTime();
     const netGain = saved - spent;
-    const debtOut = Store.state.debts.reduce((s,d)=>s+Debt.currentOwed(d),0);
+    const owedToYou = Store.state.debts.filter(d=>Debt.isOwedToYou(d)).reduce((s,d)=>s+Debt.currentOwed(d),0);
+    const youOwe = Store.state.debts.filter(d=>!Debt.isOwedToYou(d)).reduce((s,d)=>s+Debt.currentOwed(d),0);
+    const netDebtPosition = owedToYou-youOwe;
     const health = Budget.healthScore();
     const heat = this.heatmapData();
     let heatCells = '';
@@ -503,7 +505,7 @@ const Analytics = {
         <div class="card"><div class="card-label">Money Saved</div><div class="card-value">${Utils.fmtMoney(saved)}</div></div>
         <div class="card"><div class="card-label">Money Spent</div><div class="card-value">${Utils.fmtMoney(spent)}</div></div>
         <div class="card"><div class="card-label">Net Gain / Loss</div><div class="card-value ${netGain<0?'text-accent':''}">${Utils.fmtMoney(netGain)}</div></div>
-        <div class="card"><div class="card-label">Debt Outstanding</div><div class="card-value">${Utils.fmtMoney(debtOut)}</div></div>
+        <div class="card"><div class="card-label">Net Debt Position</div><div class="card-value">${Utils.fmtMoney(netDebtPosition)}</div><div class="card-sub">${netDebtPosition>=0?'Net receivable':'Net payable'} · owed to you ${Utils.fmtMoney(owedToYou)} · you owe ${Utils.fmtMoney(youOwe)}</div></div>
       </div>
 
       <div class="grid grid-4" style="margin-bottom:var(--gap);">

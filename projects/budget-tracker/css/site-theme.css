@@ -140,6 +140,7 @@ body.budget-page[data-theme]{
   z-index:25;
   display:grid;
   grid-template-columns:repeat(6,minmax(0,1fr));
+  border:1px solid var(--bg3);
   border-bottom:1px solid var(--bg3);
   background:var(--bg);
 }
@@ -148,6 +149,7 @@ body.budget-page[data-theme]{
   min-width:0;
   padding:10px 10px;
   border:0;
+  border-right:1px solid var(--bg3)!important;
   border-bottom:2px solid transparent;
   background:transparent;
   color:var(--fg3);
@@ -157,6 +159,7 @@ body.budget-page[data-theme]{
   white-space:nowrap;
   transition:background-color .15s ease,color .15s ease,border-color .15s ease;
 }
+.nav-item:last-child{border-right:0!important}
 .nav-item:hover{background:var(--bg_s);color:var(--fg)}
 .nav-item.active{border-bottom-color:var(--blue);background:var(--bg_s);color:var(--fg1)}
 .nav-item:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
