@@ -62,9 +62,9 @@ a:not(.slide):after{content:"";position:absolute;left:0;bottom:0;width:100%;heig
 a:not(.slide):hover:after,a:not(.slide):focus-visible:after{transform:scaleX(1);transform-origin:bottom left}
 a:not(.slide):hover{color:var(--blue-dim);text-decoration:none}
 .content a:not(.slide):hover{text-decoration:none}
-.about a.social-github,.about a.social-linkedin,.pdf-open a.slide,.pdf-frame p a{color:var(--blue)}
-.about a.social-github:after,.about a.social-linkedin:after,.pdf-open a.slide:after{background-color:currentColor}
-.about a.social-github:hover,.about a.social-linkedin:hover{text-decoration:none}
+.about a.social-github,.about a.social-linkedin,.about a.social-x,.pdf-open a.slide,.pdf-frame p a{color:var(--blue)}
+.about a.social-github:after,.about a.social-linkedin:after,.about a.social-x:after,.pdf-open a.slide:after{background-color:currentColor}
+.about a.social-github:hover,.about a.social-linkedin:hover,.about a.social-x:hover{text-decoration:none}
 
 /* Listing tables (Publications, Articles, Side Projects) */
 .dir-wrap{overflow-x:auto;margin-bottom:1.2rem}
