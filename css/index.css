@@ -33,7 +33,17 @@
 }
 
 /* Layout for every page. Uses the colour variables from common.css */
-html{scrollbar-gutter:stable}
+html{scrollbar-gutter:auto;scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+.overlay-scrollbar{position:fixed;top:0;right:0;bottom:0;z-index:1000;width:14px;touch-action:none;opacity:.5;transition:opacity .15s ease}
+.overlay-scrollbar[hidden]{display:none}
+.overlay-scrollbar:hover,.overlay-scrollbar:focus-visible,.overlay-scrollbar.is-dragging{opacity:1}
+.overlay-scrollbar:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.overlay-scrollbar-thumb{position:absolute;top:0;right:4px;width:4px;min-height:28px;background:var(--fg3);transition:width .15s ease,right .15s ease}
+.overlay-scrollbar:hover .overlay-scrollbar-thumb,.overlay-scrollbar:focus-visible .overlay-scrollbar-thumb,.overlay-scrollbar.is-dragging .overlay-scrollbar-thumb{right:2px;width:8px;background:var(--fg)}
+@media(prefers-reduced-motion:reduce){
+  .overlay-scrollbar,.overlay-scrollbar-thumb{transition:none}
+}
 body.index #wrapper{max-width:900px}
 #wrapper{font-family:"JetBrains Mono",monospace}
 .listing{width:100%;max-width:100%}
