@@ -96,6 +96,8 @@ table.dir{width:100%;border-collapse:collapse;font-size:1rem}
 .dir .name-cell{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:.5rem;align-items:start}
 .dir .name-cell .tag{margin-right:0}
 .dir .name-cell a.slide{justify-self:start;max-width:100%;min-width:0}
+.publication-list .name-cell>span:last-child{text-align:justify}
+.publication-list tbody tr+tr td{padding-top:2rem}
 .dir td a:not(.slide){color:var(--blue)}
 .project-list{margin-top:1.6rem}
 .project-item{margin-bottom:1.2rem}
