@@ -19,7 +19,6 @@ body.budget-page{
   --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", "Fira Code", Menlo, Consolas, "Liberation Mono", monospace;
   --dur: 220ms;
   --ease: cubic-bezier(.2,.7,.3,1);
-  --fs-scale: 1;
 }
 
 body.budget-page[data-theme="light"]{
@@ -44,9 +43,6 @@ body.budget-page[data-theme="pureblack"]{
 body.budget-page[data-theme="highcontrast"]{
   --bg:#000000; --bg-acrylic:rgba(0,0,0,0.9); --bg-raised:#000000; --bg-card:#000000; --line:#f5f5f0; --line-soft:#8f8f8a; --fg:#ffffff; --fg-dim:#e5e5e0; --fg-faint:#c0c0ba;
 }
-body.budget-page[data-fontsize="sm"]{ --fs-scale: 0.9; }
-body.budget-page[data-fontsize="lg"]{ --fs-scale: 1.15; }
-
 :where(
   body.budget-page #app,
   body.budget-page #app *,
@@ -65,7 +61,7 @@ body.budget-page #app{
   background:var(--bg);
   color:var(--fg);
   font-family:var(--mono);
-  font-size:calc(15px * var(--fs-scale));
+  font-size:15px;
   line-height:1.5;
   min-width:0;
 }

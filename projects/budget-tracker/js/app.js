@@ -36,7 +36,7 @@ const Store = {
   state: null,
   defaults(){
     return {
-      settings: { currency:'₱', theme:'dark', fontSize:'md' },
+      settings: { currency:'₱', theme:'dark' },
       categories: ['Food','Transport','School','Shopping','Entertainment','Subscriptions','Utilities','Healthcare','Miscellaneous'],
       goals: [],
       expenses: [],
@@ -130,7 +130,6 @@ const Core = {
   boot(){
     Store.load();
     document.body.dataset.theme = Store.state.settings.theme;
-    document.body.dataset.fontsize = Store.state.settings.fontSize;
     this.wireNav();
     this.wireSearch();
     this.wireQuickAdd();
@@ -568,23 +567,10 @@ const Settings = {
     el.innerHTML = `
       <div class="section-head"><div><div class="section-title">Settings</div><div class="section-sub">Preferences, data & currency</div></div></div>
 
-      <div class="grid grid-2" style="margin-bottom:var(--gap);">
-        <div class="card">
-          <div class="card-label" style="margin-bottom:12px;">Currency</div>
-          <div class="chip-group" id="currChips">
-            ${[['₱','PHP'],['$','USD'],['€','EUR'],['¥','JPY'],['£','GBP']].map(([sym,name])=>`<button type="button" class="chip ${s.currency===sym?'selected':''}" data-c="${sym}">${sym} ${name}</button>`).join('')}
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-label" style="margin-bottom:12px;">Appearance</div>
-          <div class="card-sub">Uses the site's color palette for a consistent experience.</div>
-        </div>
-      </div>
-
       <div class="card" style="margin-bottom:var(--gap);">
-        <div class="card-label" style="margin-bottom:12px;">Font Size</div>
-        <div class="chip-group" id="fontChips">
-          ${[['sm','SMALL'],['md','MEDIUM'],['lg','LARGE']].map(([v,n])=>`<button type="button" class="chip ${s.fontSize===v?'selected':''}" data-f="${v}">${n}</button>`).join('')}
+        <div class="card-label" style="margin-bottom:12px;">Currency</div>
+        <div class="chip-group currency-grid" id="currChips">
+          ${[['₱','PHP'],['$','USD'],['€','EUR'],['¥','JPY'],['£','GBP'],['A$','AUD'],['C$','CAD'],['Fr','CHF'],['CN¥','CNY'],['₹','INR'],['₩','KRW'],['S$','SGD'],['HK$','HKD'],['NZ$','NZD'],['฿','THB'],['Rp','IDR'],['RM','MYR'],['₫','VND'],['R$','BRL'],['Mex$','MXN'],['R','ZAR']].map(([sym,name])=>`<button type="button" class="chip ${s.currency===sym?'selected':''}" data-c="${sym}">${sym} ${name}</button>`).join('')}
         </div>
       </div>
 
@@ -598,17 +584,10 @@ const Settings = {
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-label" style="margin-bottom:8px;">About</div>
-        <p class="card-sub">Budget Tracker is local-first, private, and does not track you.</p>
-      </div>
     `;
 
     document.getElementById('currChips').querySelectorAll('.chip').forEach(c=>{
       c.addEventListener('click', ()=>{ Store.state.settings.currency = c.dataset.c; Core.refreshAllData(); });
-    });
-    document.getElementById('fontChips').querySelectorAll('.chip').forEach(c=>{
-      c.addEventListener('click', ()=>{ Store.state.settings.fontSize = c.dataset.f; document.body.dataset.fontsize = c.dataset.f; Core.refreshAllData(); });
     });
     document.getElementById('exportBtn').onclick = () => {
       const blob = new Blob([JSON.stringify(Store.state, null, 2)], {type:'application/json'});
@@ -630,7 +609,6 @@ const Settings = {
           Store.state = Object.assign(Store.defaults(), data);
           Core.refreshAllData();
           document.body.dataset.theme = Store.state.settings.theme;
-          document.body.dataset.fontsize = Store.state.settings.fontSize;
           Toast.show('Data imported successfully.');
         }catch(err){ Toast.show('Invalid file format.', {warn:true}); }
       };
