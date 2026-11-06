@@ -96,6 +96,7 @@ table.dir{width:100%;border-collapse:collapse;font-size:1rem}
 .nf{font-family:"JetBrains Mono",monospace;font-weight:500;margin-bottom:.8rem}
 .about{margin-top:.6rem}
 .about img{outline:1px solid var(--fg);margin-top:2.8rem}
+.about p:first-of-type{text-align:justify;hyphens:auto}
 .about:after{content:"";display:block;clear:both}
 .about h2{font-family:"JetBrains Mono",monospace;font-size:1.6rem;font-weight:500;margin-bottom:.8rem}
 .about.content h2{font-family:"JetBrains Mono",monospace}

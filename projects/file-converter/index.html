@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Converter | Joshua Omamalin</title>
+<meta name="description" content="Convert images and basic documents locally in your browser.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/common.min.9ec15a660d997d0b6fd62d9c77e665c2abbf5c6bcadc1af17a2eb308a546ca8c.css">
+<link rel="stylesheet" href="../../css/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="index converter-page">
+<div id="wrapper">
+  <main id="main" class="listing">
+    <header class="topbar">
+      <a class="slide brand" href="../../">Joshua Omamalin</a>
+      <span class="line" aria-hidden="true"></span>
+      <nav aria-label="Sections"><a class="slide" href="../../cv/">CV</a><a class="slide" href="../../publications/">Publications</a><a class="slide" href="../../articles/">Articles</a><a class="slide" href="../" aria-current="page">Side Projects</a></nav>
+    </header>
+
+    <section class="converter" aria-labelledby="converterTitle">
+      <div class="converter-heading">
+        <h1 id="converterTitle">File Converter</h1>
+        <p>Convert images and basic documents right in your browser.</p>
+      </div>
+
+      <form id="converterForm" class="converter-panel">
+        <input id="fileInput" class="visually-hidden" type="file" accept=".png,.jpg,.jpeg,.webp,.txt,.md,.markdown,.html,.htm">
+        <div id="dropZone" class="drop-zone" role="group" tabindex="0" aria-label="File drop area. Press Enter or Space to browse.">
+          <strong>Drop a file here</strong>
+          <span>or <button id="browseButton" class="text-button" type="button">browse your device</button></span>
+          <small>PNG, JPEG, WebP, TXT, Markdown, or HTML</small>
+        </div>
+
+        <div id="fileDetails" class="file-details hidden" aria-live="polite">
+          <div class="file-copy">
+            <strong id="fileName"></strong>
+            <span id="fileMeta"></span>
+          </div>
+          <button id="removeFileButton" class="secondary-button" type="button">Remove</button>
+        </div>
+
+        <div class="converter-controls">
+          <label for="outputFormat">Convert to</label>
+          <select id="outputFormat" name="outputFormat" disabled></select>
+          <div id="qualityControl" class="quality-control hidden">
+            <label for="quality">Quality <span id="qualityValue">85%</span></label>
+            <input id="quality" type="range" min="10" max="100" value="85">
+          </div>
+        </div>
+
+        <button id="convertButton" class="primary-button" type="submit" disabled>Convert file</button>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+
+        <div id="outputDetails" class="output-details hidden">
+          <div class="file-copy">
+            <strong id="outputName"></strong>
+            <span id="outputMeta"></span>
+          </div>
+          <a id="downloadLink" class="download-link" href="#">Download</a>
+        </div>
+      </form>
+
+      <p class="privacy-note">Conversion happens locally in this tab. Files are not uploaded or saved by this site.</p>
+    </section>
+
+    <footer class="converter-footer">
+      <span class="dir-foot">Static Site &mdash; Hosted by GitHub Pages</span>
+      <a class="repository-link" href="https://github.com/vuieee/joshua-omamalin/tree/main/projects/file-converter" target="_blank" rel="noopener">View repository</a>
+    </footer>
+  </main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
